@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Hax Emotion Avatars
-// @version      0.3
+// @version      0.4
 // @description  Tap a button to show your emotion!
 // @author       You
 // @match        https://www.haxball.com/play
@@ -11,7 +11,7 @@
   "use strict"; // SET DURATION FOR AVATAR TO APPEAR
   var defaultDuration = 800;
   // SET DEFAULT AVATAR
-  var def = "🚶";
+  var def = "🤠";
 
   // USE THE SWITCH STATEMENT TO CHANGE THE EMOJIS
   function process(key) {
@@ -28,64 +28,53 @@
         avatar = "👀";
         break;
       case "8":
-        avatar = "💩";
+        avatar = "🤬";
         break;
       case "9":
         avatar = "😨";
         break;
-      }
+    }
     if (avatar != "") {
       setAvatar(avatar);
-      setTimeout(function() {
+      if (reset != undefined) {
+        clearTimeout(reset);
+      }
+      reset = setTimeout(function() {
         setAvatar(def);
       }, duration);
     }
   }
 
+  var reset;
+
   // code to change the avatar
   function setAvatar(avatar) {
     console.log("avatar: " + avatar);
-    iframe.querySelectorAll("[data-hook='input']")[0].value =
-      "/avatar " + avatar;
-    iframe.querySelectorAll("[data-hook='send']")[0].click();
+    iframe.body.querySelectorAll("[data-hook='input']")[0].value = "/avatar " + avatar;
+    iframe.body.querySelectorAll("[data-hook='send']")[0].click();
+
+    var notices = iframe.body.getElementsByClassName("notice");
+    for (var i = 0; i < notices.length; i++) {
+      var notice = notices[i];
+      if (notice.innerHTML == "Avatar set") {
+        notice.parentNode.removeChild(notice);
+      }
+    }
   }
 
   // listens to key presses.
   var listener = function(event) {
-    const key = event.key;
-    process(key);
+    if (iframe.activeElement != iframe.querySelectorAll("[data-hook='input']")[0]) {
+      const key = event.key;
+      process(key);
+    }
   };
 
-  // when we find a new game pitch
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      for (var i = 0; i < mutation.addedNodes.length; i++) {
-        if (
-          mutation.addedNodes[i].className == "game-state-view" ||
-          mutation.addedNodes[i].className == "game-view"
-        ) {
-          var canvas = mutation.addedNodes[i].querySelector("canvas");
-          canvas.tabIndex = 1;
-          canvas.focus();
-          canvas.removeEventListener("keydown", listener, true);
-          canvas.addEventListener("keydown", listener, true);
-        } else if (mutation.addedNodes[i].innerHTML == "Avatar set") {
-          mutation.addedNodes[i].parentNode.removeChild(mutation.addedNodes[i]);
-        }
-      }
-    });
-  });
+  //document.activeElement
   var iframe;
   setTimeout(function() {
-    iframe = document.querySelector("iframe").contentWindow.document.body;
-    // register for element updates.
-    observer.observe(
-      document.querySelector("iframe").contentWindow.document.body,
-      {
-        childList: true,
-        subtree: true
-      }
-    );
+    iframe = document.querySelector("iframe").contentWindow.document;
+    iframe.body.addEventListener("keydown", listener, true);
     console.log("Setup complete");
   }, 3000);
 })();
