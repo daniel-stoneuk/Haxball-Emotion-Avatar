@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Hax Emotion Avatars
-// @version      0.4
+// @version      0.5
 // @description  Tap a button to show your emotion!
 // @author       You
 // @match        https://www.haxball.com/play
@@ -8,39 +8,30 @@
 // ==/UserScript==
 
 (function() {
-  "use strict"; // SET DURATION FOR AVATAR TO APPEAR
+  "use strict"; 
+  // SET DURATION FOR AVATAR TO APPEAR
   var defaultDuration = 800;
-  // SET DEFAULT AVATAR
-  var def = "🤠";
+  // SET DEFAULT AVATAR & change emojis - can be extended
+  // and changed by following the same syntax.
+  var avatars = {
+    'default': "🤠",
+    '5': "👏",
+    '6': "👋",
+    "7": "👀",
+    "8": "🤬",
+    "9": "😨"
+  }
 
-  // USE THE SWITCH STATEMENT TO CHANGE THE EMOJIS
   function process(key) {
-    var avatar = "";
+    var avatar = avatars[key];
     var duration = defaultDuration;
-    switch (key) {
-      case "5":
-        avatar = "👏";
-        break;
-      case "6":
-        avatar = "👋";
-        break;
-      case "7":
-        avatar = "👀";
-        break;
-      case "8":
-        avatar = "🤬";
-        break;
-      case "9":
-        avatar = "😨";
-        break;
-    }
-    if (avatar != "") {
+    if (avatar) {
       setAvatar(avatar);
       if (reset != undefined) {
         clearTimeout(reset);
       }
       reset = setTimeout(function() {
-        setAvatar(def);
+        setAvatar(avatars['default']);
       }, duration);
     }
   }
