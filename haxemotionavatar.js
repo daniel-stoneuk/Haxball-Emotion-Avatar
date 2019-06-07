@@ -1,6 +1,5 @@
 // ==UserScript==
 // @name         Hax Emotion Avatars
-// @namespace    https://danstone.uk
 // @version      0.1
 // @description  Tap a button to show your emotion!
 // @author       You
@@ -81,4 +80,3 @@
     }
   );
 })();
-
