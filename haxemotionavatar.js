@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Hax Emotion Avatars
-// @version      0.1
+// @version      0.3
 // @description  Tap a button to show your emotion!
 // @author       You
 // @match        https://www.haxball.com/play
@@ -9,27 +9,31 @@
 
 (function() {
   "use strict"; // SET DURATION FOR AVATAR TO APPEAR
-  var duration = 800;
+  var defaultDuration = 800;
   // SET DEFAULT AVATAR
-  var def = ":)";
+  var def = "🚶";
 
   // USE THE SWITCH STATEMENT TO CHANGE THE EMOJIS
   function process(key) {
     var avatar = "";
+    var duration = defaultDuration;
     switch (key) {
-      case "6":
+      case "5":
         avatar = "👏";
         break;
-      case "7":
+      case "6":
         avatar = "👋";
         break;
-      case "8":
+      case "7":
         avatar = "👀";
+        break;
+      case "8":
+        avatar = "💩";
         break;
       case "9":
         avatar = "😨";
         break;
-    }
+      }
     if (avatar != "") {
       setAvatar(avatar);
       setTimeout(function() {
@@ -52,8 +56,6 @@
     process(key);
   };
 
-  var iframe = document.querySelector("iframe").contentWindow.document.body;
-
   // when we find a new game pitch
   var observer = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
@@ -67,16 +69,23 @@
           canvas.focus();
           canvas.removeEventListener("keydown", listener, true);
           canvas.addEventListener("keydown", listener, true);
+        } else if (mutation.addedNodes[i].innerHTML == "Avatar set") {
+          mutation.addedNodes[i].parentNode.removeChild(mutation.addedNodes[i]);
         }
       }
     });
   });
-  // register for element updates.
-  observer.observe(
-    document.querySelector("iframe").contentWindow.document.body,
-    {
-      childList: true,
-      subtree: true
-    }
-  );
+  var iframe;
+  setTimeout(function() {
+    iframe = document.querySelector("iframe").contentWindow.document.body;
+    // register for element updates.
+    observer.observe(
+      document.querySelector("iframe").contentWindow.document.body,
+      {
+        childList: true,
+        subtree: true
+      }
+    );
+    console.log("Setup complete");
+  }, 3000);
 })();
