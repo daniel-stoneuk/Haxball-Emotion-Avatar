@@ -1,6 +1,6 @@
 https://greasyfork.org/en/scripts/384730-hax-emotion-avatars
 
-#Hax Emotion Avatars
+# Hax Emotion Avatars
 
 Script to change your avatar on haxball for a second, this is useful to call for the ball or just show some emotion!
 
